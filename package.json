@@ -1,0 +1,13 @@
+{
+  "name": "@helsingborg-stad/material-design-icons-json-svg-font-reduced-build",
+  "private": true,
+  "version": "0.0.0",
+  "description": "Build tooling for the reduced Material Symbols Composer package.",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "verify": "node scripts/verify.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

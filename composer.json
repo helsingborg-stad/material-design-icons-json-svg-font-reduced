@@ -1,0 +1,10 @@
+{
+  "name": "helsingborg-stad/material-design-icons-json-svg-font-reduced",
+  "description": "Reduced Material Symbols assets for Helsingborgs stad: outlined, rounded and sharp SVGs at weights 200, 400 and 600, plus variable WOFF2 fonts.",
+  "type": "library",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/helsingborg-stad/material-design-icons-json-svg-font-reduced",
+  "support": {
+    "source": "https://github.com/helsingborg-stad/material-design-icons-json-svg-font-reduced"
+  }
+}

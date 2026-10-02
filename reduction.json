@@ -1,0 +1,18 @@
+{
+  "variants": [
+    "outlined",
+    "rounded",
+    "sharp"
+  ],
+  "weights": [
+    200,
+    400,
+    600
+  ],
+  "formats": [
+    "svg",
+    "woff2"
+  ],
+  "staticFonts": false,
+  "variableFonts": true
+}

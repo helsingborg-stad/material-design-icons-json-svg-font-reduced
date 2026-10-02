@@ -1,0 +1,67 @@
+name: Sync reduced Material Symbols package
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_ref:
+        description: Source package ref to build from
+        required: false
+        default: main
+        type: string
+  schedule:
+    - cron: '23 3 * * *'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out reduced package
+        uses: actions/checkout@v4
+
+      - name: Check out source package
+        uses: actions/checkout@v4
+        with:
+          repository: helsingborg-stad/material-design-icons-json-svg-font
+          ref: ${{ inputs.source_ref || 'main' }}
+          path: upstream
+          # Configure MATERIAL_SYMBOLS_READ_TOKEN when the source repository is private.
+          token: ${{ secrets.MATERIAL_SYMBOLS_READ_TOKEN || github.token }}
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Build reduced assets
+        run: node scripts/build.mjs --source upstream --output .
+
+      - name: Verify reduced assets
+        run: node scripts/verify.mjs .
+
+      - name: Commit generated package
+        id: commit
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add --all
+          if git diff --cached --quiet; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "Sync Material Symbols from $(node -p \"require('./source.json').version\")"
+          git push
+          echo 'changed=true' >> "$GITHUB_OUTPUT"
+
+      - name: Tag and publish GitHub release
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(node -p "require('./source.json').version")
+          TAG="v${VERSION}"
+          git tag "$TAG"
+          git push origin "$TAG"
+          gh release create "$TAG" --title "${TAG}" --generate-notes
